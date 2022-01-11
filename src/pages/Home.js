@@ -15,14 +15,19 @@ const Home = () => {
     const {currentUser} = useContext(AuthContext)
 
     useEffect(() => {
-        getMovies(FEATURED_API)
-    }, [])
+        getMovies(FEATURED_API);
+    }, []);
 
     const getMovies = (API) => {
         fetch(API)
         .then(res => res.json())
         .then(res => setMovies(res.results))
+        
     }
+
+
+
+
 
     const handleSubmit = (e) => {
         e.preventDefault()

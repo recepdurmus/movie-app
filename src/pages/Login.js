@@ -1,48 +1,52 @@
 import React, { useState } from 'react'
 import { LoginOutlined } from '@mui/icons-material'
 import { Container, Grid, Typography, TextField, Avatar, Button, Link} from '@mui/material'
-import { Formik } from 'formik'
-// import * as Yup from 'yup'
+import { Formik, useFormik } from 'formik'
+import * as Yup from 'yup'
 import { useNavigate } from 'react-router-dom'
 import {signInWithEmailAndPassword} from 'firebase/auth'
 import {auth} from '../auth/firebase-config'
 
+const Schema = Yup.object().shape({
+    email: Yup.string().email("Invalid Email").required("Email is required"),
+    password: Yup.string()
+      .required("No password provided")
+      .min(8, "Password is too short - should be 8 chars minimum")
+      .matches(/\d+/, "Password must have a number")
+      .matches(/[a-z]+/, "Password must have a lowercase")
+      .matches(/[A-Z]+/, "Password must have a uppercase")
+      .matches(/[!?.@#$%^&*()-+]+/, "Password must have a special char"),
+  });
 
-
-
+  const initialValues = {
+    email: "",
+    password: ""
+  };
 
 const Login = () => {
     const navigate = useNavigate()
-    const [email, setemail] = useState()
-    const [password, setpassword] = useState()
+    const [loading, setLoading] = useState(false);
 
-    // const Schema = Yup.object().shape({
-    //     email: Yup.string().email('Invalid Email').required('Email is required'),
-    //     password: Yup.string()
-    //         .required('No password provided')
-    //         .min(8, 'Password is too short - should be 8 chars minimum')
-    //         .matches(/\d+/, 'Password must have a number')
-    //         .matches(/[a-z]+/, 'Password must have a lowercase')
-    //         .matches(/[A-Z]+/, 'Password must have a uppercase')
-    //         .matches(/[!?.@#$%^&*()-+]+/, 'Password must have a special char')
-    // })
-
-    const handleSubmit = async () => {
-        try {
-
-            let user = await signInWithEmailAndPassword(auth, email, password)
-            console.log(user)
-            navigate('/')
-
-        } catch (err) {
-            alert(err.message)
+    const formik = useFormik({
+        initialValues : {
+            email: "",
+            password: ""
+        },
+        validationSchema: Schema,
+        onSubmit: async (values) => {
+            setLoading(true)
+            try {
+                let user = await signInWithEmailAndPassword(auth, values.email, values.password)
+                console.log(user)
+                navigate('/')
+            } catch (err) {
+                alert(err.message)
+            }
+            setLoading(false)
         }
-    }
-    
-    // const initialValues = {
-    //     email: '',
-    //     password: ''
-    // }
+    })
+
+
 
     return (
         <Container
@@ -69,11 +73,7 @@ const Login = () => {
             <Typography sx={{ margin: '2rem'}} variant='h4'>
                 Login
             </Typography>
-            <Formik
-                // initialValues={initialValues}
-                onSubmit={handleSubmit}
-                // validationSchema={Schema}
-            >{({
+            <Formik>{({
                 values,
                 handleSubmit,
                 touched, 
@@ -81,7 +81,7 @@ const Login = () => {
                 handleBlur
 
             }) => (
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={formik.handleSubmit}>
                     <Grid container spacing={5}>
                         <Grid item xs={12}>
                             <TextField 
@@ -89,11 +89,11 @@ const Login = () => {
                                 name='email' 
                                 label="Email" 
                                 variant="outlined"
-                                // value={values.email}
-                                onChange={(e) => setemail(e.target.value)}
-                                onBlur={handleBlur}
-                                helperText={touched.email && errors.email}
-                                error={touched.email && Boolean(errors.email)} />
+                                value={formik.values.email}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                helperText={formik.touched.email && formik.errors.email}
+                                error={formik.touched.email && Boolean(formik.errors.email)} />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField 
@@ -102,11 +102,11 @@ const Login = () => {
                                 name='password' 
                                 label="Password" 
                                 variant="outlined"
-                                // value={values.password}
-                                onChange={(e) => setpassword(e.target.value)}
-                                onBlur={handleBlur}
-                                helperText={touched.password && errors.password}
-                                error={touched.password && Boolean(errors.password)} />
+                                value={formik.values.password}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                helperText={formik.touched.password && formik.errors.password}
+                                error={formik.touched.password && Boolean(formik.errors.password)} />
                         </Grid>
                         <Grid item xs={12}>
                             <Button 
@@ -115,7 +115,7 @@ const Login = () => {
                                 variant="contained"
                                 type='submit'
                             >
-                                Register
+                                Login
                             </Button>
                         </Grid>
                     </Grid>
