@@ -18,10 +18,10 @@ const Schema = Yup.object().shape({
       .matches(/[!?.@#$%^&*()-+]+/, "Password must have a special char"),
   });
 
-  const initialValues = {
-    email: "",
-    password: ""
-  };
+//   const initialValues = {
+//     email: "",
+//     password: ""
+//   };
 
 const Login = () => {
     const navigate = useNavigate()

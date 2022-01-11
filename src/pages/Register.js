@@ -33,12 +33,12 @@ const Schema = Yup.object().shape({
     .oneOf([Yup.ref("password"), null], "Passwords must match"),
 });
 
-const initialValues = {
-  username: "",
-  email: "",
-  password: "",
-  confirm: "",
-};
+// const initialValues = {
+//   username: "",
+//   email: "",
+//   password: "",
+//   confirm: "",
+// };
 
 const Register = () => {
   const navigate = useNavigate()
