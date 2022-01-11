@@ -18,14 +18,11 @@ const Schema = Yup.object().shape({
       .matches(/[!?.@#$%^&*()-+]+/, "Password must have a special char"),
   });
 
-//   const initialValues = {
-//     email: "",
-//     password: ""
-//   };
+
 
 const Login = () => {
     const navigate = useNavigate()
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const formik = useFormik({
         initialValues : {
@@ -34,7 +31,7 @@ const Login = () => {
         },
         validationSchema: Schema,
         onSubmit: async (values) => {
-            setLoading(true)
+            // setLoading(true)
             try {
                 let user = await signInWithEmailAndPassword(auth, values.email, values.password)
                 console.log(user)
@@ -42,7 +39,7 @@ const Login = () => {
             } catch (err) {
                 alert(err.message)
             }
-            setLoading(false)
+            // setLoading(false)
         }
     })
 

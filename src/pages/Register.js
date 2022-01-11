@@ -33,16 +33,11 @@ const Schema = Yup.object().shape({
     .oneOf([Yup.ref("password"), null], "Passwords must match"),
 });
 
-// const initialValues = {
-//   username: "",
-//   email: "",
-//   password: "",
-//   confirm: "",
-// };
+
 
 const Register = () => {
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -53,7 +48,7 @@ const Register = () => {
     },
     validationSchema: Schema,
     onSubmit: async (values) => {
-      setLoading(true);
+      // setLoading(true);
       try {
         let user = await createUserWithEmailAndPassword(auth, values.email, values.password)
         console.log(user)
@@ -64,7 +59,7 @@ const Register = () => {
         alert(error.message);
       }
 
-      setLoading(false);
+      // setLoading(false);
     },
   });
 
